@@ -42,7 +42,7 @@ pipeline {
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
 
 	        sleep(time:20,unit:"SECONDS")
-          sh 'export IP=$(cat hosts) && echo "Your app are ready: http://$IP:8080"'
+          sh 'echo "Your app is ready: http://NGINX"'
 
 		input message: 'Finished using the web site? (Click "Proceed" to continue)'
 		sh 'echo "Terminate Task: Started"'
