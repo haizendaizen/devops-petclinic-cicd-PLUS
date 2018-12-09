@@ -7,6 +7,7 @@ provider "aws" {
 resource "aws_instance" "nodeA" {
   ami           = "ami-a0cfeed8"
   instance_type = "t2.micro"
+  key_name      = "MyKeyPair"
   security_groups = [
     "launch-wizard-5",
     "Web Browser access"
@@ -20,6 +21,7 @@ resource "aws_instance" "nodeA" {
 resource "aws_instance" "nodeB" {
   ami           = "ami-a0cfeed8"
   instance_type = "t2.micro"
+  key_name      = "MyKeyPair"
   security_groups = [
     "launch-wizard-5",
     "Web Browser access"
