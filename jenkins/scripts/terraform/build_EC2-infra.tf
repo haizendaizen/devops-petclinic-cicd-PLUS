@@ -9,7 +9,7 @@ resource "aws_instance" "nodeA" {
   instance_type = "t2.micro"
 
   provisioner "local-exec" {
-    command = "echo ${aws_instance.nodeA.public_ip} > hosts"
+    command = "echo ${aws_instance.nodeA.public_ip} > ../../../hosts"
   }
 }
 
@@ -18,6 +18,6 @@ resource "aws_instance" "nodeB" {
   instance_type = "t2.micro"
 
   provisioner "local-exec" {
-    command = "echo ${aws_instance.nodeB.public_ip} >> hosts"
+    command = "echo ${aws_instance.nodeB.public_ip} >> ../../../hosts"
   }
 }
