@@ -4,20 +4,21 @@
 
 # imageid="ami-a0cfeed8" # Amazon Linux AMI 2018.03.0 (HVM)
 # instance_type="t2.micro"
-key_name="MyKeyPair"
+# key_name="MyKeyPair"
 # sec_group_TCP="sg-09238c50b5c5aa1c6"
 # sec_group_8080="sg-0d04e3cac0e005a8d"
 # wait_seconds="60" # seconds between polls for the public IP to populate (keeps it from hammering their API)
 key_location="/home/leonux/aws/MyKeyPair.pem" # SSH settings
-user="ec2-user" # SSH settings
-jar_file="target/*.jar" # SSH settings
-deploy_scripts="jenkins/scripts/deploy/*.sh" # SSH settings
+# user="ec2-user" # SSH settings
+# jar_file="target/*.jar" # SSH settings
+# deploy_scripts="jenkins/scripts/deploy/*.sh" # SSH settings
 
 
 # private
 connect ()
 {
         # ssh -oStrictHostKeyChecking=no -i $key_location $user@$AWS_IP mkdir poc
+        ansible all -i hosts -u ec2-user --private-key=$key_location -b -a "mkdir poc"
 }
 
 # private
@@ -65,7 +66,10 @@ start ()
 		# fi
 
 	# done
-
+  cd jenkins/scripts/terraform/
+  /home/leonux/terraform/bin/terraform init -input=false
+  /home/leonux/terraform/bin/terraform plan -out=tfplan -input=false -var-file="/home/leonux/aws/terraform.tfvars"
+  /home/leonux/terraform/bin/terraform apply -input=false tfplan
 	# echo "Found IP $AWS_IP - Instance $INSTANCE_ID"
 
 	# echo "Trying to connect... $user@$AWS_IP"
@@ -94,6 +98,8 @@ start ()
 terminate ()
 {
 	echo "Shutting down..."
+  cd jenkins/scripts/terraform/
+  /home/leonux/terraform/bin/terraform destroy  -auto-approve -var-file="/home/leonux/aws/terraform.tfvars"
 	# export KILL_ID=$(cat id_from_file) && ~/.local/bin/aws ec2 terminate-instances --instance-ids $KILL_ID
 
 
