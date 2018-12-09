@@ -1,5 +1,5 @@
 #!/bin/bash
-
+#
 # Script parameters
 
 # imageid="ami-a0cfeed8" # Amazon Linux AMI 2018.03.0 (HVM)
