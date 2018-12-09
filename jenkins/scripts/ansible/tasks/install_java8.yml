@@ -1,0 +1,10 @@
+# install_java8.yml
+
+- name: JAVA8 | Remove old java
+  yum:
+    name: java-1.7.0-openjdk
+    state: removed
+
+- name: JAVA8 | Installing JAVA8 
+  yum:
+    name: java-1.8.0

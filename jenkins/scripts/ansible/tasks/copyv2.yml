@@ -1,0 +1,19 @@
+# copyv2.yml
+
+- name: Ansible copy multiple files with wildcard matching.
+  copy:
+    src: "{{ item }}"
+    dest: /home/ec2-user/
+    owner: ec2-user
+    group: ec2-user
+    mode: 0774
+  with_fileglob:
+    - ../../../../jenkins/scripts/deploy/*.sh
+
+- name: copy jar file to remote server
+  copy:
+     src: ../../../../target/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar
+     dest: /home/ec2-user/poc
+     owner: ec2-user 
+     group: ec2-user
+     mode: 0774
