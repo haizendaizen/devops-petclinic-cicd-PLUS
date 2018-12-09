@@ -7,6 +7,10 @@ provider "aws" {
 resource "aws_instance" "nodeA" {
   ami           = "ami-a0cfeed8"
   instance_type = "t2.micro"
+  security_groups = [
+    "launch-wizard-5",
+    "Web Browser access"
+  ]
 
   provisioner "local-exec" {
     command = "echo ${aws_instance.nodeA.public_ip} > ../../../hosts"
@@ -16,6 +20,10 @@ resource "aws_instance" "nodeA" {
 resource "aws_instance" "nodeB" {
   ami           = "ami-a0cfeed8"
   instance_type = "t2.micro"
+  security_groups = [
+    "launch-wizard-5",
+    "Web Browser access"
+  ]
 
   provisioner "local-exec" {
     command = "echo ${aws_instance.nodeB.public_ip} >> ../../../hosts"
