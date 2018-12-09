@@ -66,10 +66,12 @@ start ()
 		# fi
 
 	# done
+  # Execute terraform scripts and then going back to root directory.
   cd jenkins/scripts/terraform/
   /home/leonux/terraform/bin/terraform init -input=false
   /home/leonux/terraform/bin/terraform plan -out=tfplan -input=false -var-file="/home/leonux/aws/terraform.tfvars"
   /home/leonux/terraform/bin/terraform apply -input=false tfplan
+  cd ../../../
 	# echo "Found IP $AWS_IP - Instance $INSTANCE_ID"
 
 	# echo "Trying to connect... $user@$AWS_IP"
