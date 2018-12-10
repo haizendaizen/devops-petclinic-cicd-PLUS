@@ -27,6 +27,10 @@ resource "aws_instance" "nodeB" {
     "Web Browser access"
   ]
 
+  # Tells Terraform that this EC2 instance must be created only after the
+  # nodeA has been created.
+  depends_on = ["aws_instance.nodeA"]
+
   provisioner "local-exec" {
     command = "echo ${aws_instance.nodeB.public_ip} >> ../../../hosts"
   }
