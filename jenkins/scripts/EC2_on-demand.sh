@@ -76,7 +76,7 @@ start ()
 
 	# echo "Trying to connect... $user@$AWS_IP"
 
-	sleep 90
+	sleep 30
 	connect
 
     #     echo "$AWS_IP" > hosts
