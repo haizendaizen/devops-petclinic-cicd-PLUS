@@ -1,15 +1,14 @@
 #!/bin/bash
 
 setEnv(){
-        cd
-        cd poc/
+        cd /home/ec2-user/poc/
         mv spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar ./pocadmin.jar
 }
 
 startApp(){
         echo "[poc-deploy] starting application"
         cd
-        ./admin-start.sh
+        /home/ec2-user/admin-start.sh
 }
 
 run(){
