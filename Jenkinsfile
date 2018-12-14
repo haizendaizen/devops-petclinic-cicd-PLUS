@@ -39,7 +39,7 @@ pipeline {
             steps {
 	              sh 'echo "AWS Provisioning Task: Started"'
 		            sh './jenkins/scripts/EC2_on-demand.sh start'
-                sh 'ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"'
+                sh 'ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "sudo chef-client --local-mode --runlist 'recipe[nginx_setup]'"'
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
                 sh 'terraform output IP-nodeA'
                 sh 'terraform output IP-nodeB'
