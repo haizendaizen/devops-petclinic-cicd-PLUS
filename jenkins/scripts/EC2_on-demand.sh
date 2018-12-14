@@ -104,7 +104,11 @@ start ()
 
 	publish
 
-	echo "Done!"
+	echo "Starting NGINX..."
+
+  ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
+
+  echo "Done!"
 
 	# echo "$AWS_IP" > ip_from_file
 
