@@ -1,25 +1,25 @@
 # copy.yml
 
-- name: copy script file 1 to remote server
+- name: copy default recipe to remote server
   copy:
-     src: ../../../../jenkins/scripts/deploy/admin-start.sh
-     dest: /home/ec2-user/
-     owner: ec2-user 
+     src: ../../../../jenkins/scripts/chef-repo/default.rb
+     dest: /home/ec2-user/chef-repo/cookbooks/nginx_setup/recipes/
+     owner: ec2-user
      group: ec2-user
      mode: 0774
 
-- name: copy script file 2 to remote server
+- name: copy webserver recipe to remote server
   copy:
-     src: ../../../../jenkins/scripts/deploy/deploy.sh
-     dest: /home/ec2-user/
-     owner: ec2-user 
+     src: ../../../../jenkins/scripts/chef-repo/webserver.rb
+     dest: /home/ec2-user/chef-repo/cookbooks/nginx_setup/recipes/
+     owner: ec2-user
      group: ec2-user
      mode: 0774
 
-- name: copy jar file to remote server
+- name: copy ERB template to remote server
   copy:
-     src: ../../../../target/spring-petclinic-2.1.0.BUILD-SNAPSHOT.jar
-     dest: /home/ec2-user/poc
-     owner: ec2-user 
+     src: ../../../../jenkins/scripts/chef-repo/nginx.conf.erb
+     dest: /home/ec2-user/chef-repo/cookbooks/nginx_setup/templates/
+     owner: ec2-user
      group: ec2-user
      mode: 0774

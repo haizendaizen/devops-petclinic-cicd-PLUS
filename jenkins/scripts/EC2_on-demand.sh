@@ -26,15 +26,30 @@ publish ()
 {
         ansible all -i hosts -u ec2-user --private-key=$key_location -b -m copy -a "src=hosts dest=~/hosts"
         ansible-playbook jenkins/scripts/ansible/copyfile.yml -i hosts --private-key=$key_location
+
+        ansible-playbook jenkins/scripts/ansible/copy_chef_files.yml -i httpd --private-key=$key_location
 }
 
 # private
 configEnv ()
 {
-
+        # Configure EC2 nodes
         ansible all -i hosts -u ec2-user --private-key=$key_location -b -a "yum -y update"
         ansible-playbook jenkins/scripts/ansible/configEC2.yml -i hosts --private-key=$key_location
 
+        # Configure NGINX webserver
+        #Step 1: Install CHEF
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+
+        #Step 2: Configure CHEF run environment
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo"
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo/cookbooks"
+
+        #Step 3: Generate NGINX cookbook
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "chef generate cookbook chef-repo/cookbooks/nginx_setup"
+
+        #Step 4: Create template
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "chef generate template chef-repo/cookbooks/nginx_setup nginx.conf"
 }
 
 # private
@@ -81,13 +96,13 @@ start ()
 
     #     echo "$AWS_IP" > hosts
 
-	echo "Publish Over SSH..."
-
-	publish
-
 	echo "Config Task: Started"
 
 	configEnv
+
+  echo "Publish Over SSH..."
+
+	publish
 
 	echo "Done!"
 
