@@ -41,7 +41,7 @@ http {
         # Load balancer configuration
 
         server nodeA:8080 max_fails=2 fail_timeout=90s;
-        server nodeB.170:8080 max_fails=2 fail_timeout=90s;
+        server nodeB:8080 max_fails=2 fail_timeout=90s;
         }
 
     server {
