@@ -17,10 +17,6 @@ resource "aws_instance" "nodeA" {
     Name = "nodeA"
   }
 
-  output "IP-nodeA" {
-  value = "${aws_instance.nodeA.public_ip}"
-  }
-
   provisioner "local-exec" {
     command = "echo ${aws_instance.nodeA.public_ip} > ../../../hosts"
   }
@@ -37,10 +33,6 @@ resource "aws_instance" "nodeB" {
 
   tags {
     Name = "nodeB"
-  }
-
-  output "IP-nodeB" {
-  value = "${aws_instance.nodeB.public_ip}"
   }
 
   # Tells Terraform that this EC2 instance must be created only after the
