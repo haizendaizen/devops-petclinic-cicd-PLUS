@@ -40,16 +40,17 @@ configEnv ()
         # Configure NGINX webserver
         #Step 1: Install CHEF
         ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+        sleep 30
 
         #Step 2: Configure CHEF run environment
         ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo"
         ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo/cookbooks"
 
         #Step 3: Generate NGINX cookbook
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "chef generate cookbook chef-repo/cookbooks/nginx_setup"
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && chef generate cookbook cookbooks/nginx_setup"
 
         #Step 4: Create template
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "chef generate template chef-repo/cookbooks/nginx_setup nginx.conf"
+        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && chef generate template cookbooks/nginx_setup nginx.conf"
 }
 
 # private
@@ -106,7 +107,7 @@ start ()
 
 	echo "Starting NGINX..."
 
-  ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
+  ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
 
   echo "Done!"
 
