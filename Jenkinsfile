@@ -40,8 +40,8 @@ pipeline {
 	              sh 'echo "AWS Provisioning Task: Started"'
 		            sh './jenkins/scripts/EC2_on-demand.sh start'
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
-                sh '/home/leonux/terraform/bin/terraform output IP-nodeA'
-                sh '/home/leonux/terraform/bin/terraform output IP-nodeB'
+                sh 'cd jenkins/scripts/terraform/ && /home/leonux/terraform/bin/terraform output IP-nodeA'
+                sh 'cd jenkins/scripts/terraform/ && /home/leonux/terraform/bin/terraform output IP-nodeB'
 
 	        sleep(time:20,unit:"SECONDS")
           sh 'echo "Your app is ready: http://NGINX"'
