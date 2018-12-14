@@ -58,4 +58,8 @@ resource "aws_instance" "webserver" {
   }
 
   depends_on = ["aws_instance.nodeB"]
+
+  provisioner "local-exec" {
+    command = "echo ${aws_instance.webserver.public_ip} > ../../../httpd"
+  }
 }

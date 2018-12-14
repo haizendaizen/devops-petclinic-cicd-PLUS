@@ -1,6 +1,6 @@
 #
-# Cookbook:: learn_chef_nginx
-# Recipe:: default
+# Cookbook:: nginx_setup
+# Recipe:: webserver.rb
 #
 # Copyright:: 2018, The Authors, All Rights Reserved.
 #
@@ -13,6 +13,6 @@ service 'nginx' do
   action :start
 end
 
-template '/usr/share/nginx/html/index.html' do
-  source 'index.html.erb'
+template '/etc/nginx/nginx.conf' do
+  source 'nginx.conf.erb'
 end

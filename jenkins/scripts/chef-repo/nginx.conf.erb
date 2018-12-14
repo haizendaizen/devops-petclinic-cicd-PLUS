@@ -40,8 +40,8 @@ http {
     upstream my-backend {
         # Load balancer configuration
 
-        server 34.216.194.127:8080 max_fails=2 fail_timeout=90s;
-        server 34.219.253.170:8080 max_fails=2 fail_timeout=90s;
+        server nodeA:8080 max_fails=2 fail_timeout=90s;
+        server nodeB.170:8080 max_fails=2 fail_timeout=90s;
         }
 
     server {
@@ -133,4 +133,3 @@ http {
 #    }
 
 }
-
