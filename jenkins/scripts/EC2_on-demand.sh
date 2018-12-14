@@ -37,9 +37,9 @@ configEnv ()
         ansible all -i hosts -u ec2-user --private-key=$key_location -b -a "yum -y update"
         ansible-playbook jenkins/scripts/ansible/configEC2.yml -i hosts --private-key=$key_location
 
-        # Configure NGINX webserver
-        #Step 1: Install CHEF
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+        # Configure NGINX webserver ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+        #Step 1: Install CHEF via SSH
+        ssh -oStrictHostKeyChecking=no -i /home/leonux/.ssh/MyKeyPair.pem ec2-user@$(cat httpd) "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
         sleep 30
 
         #Step 2: Configure CHEF run environment
