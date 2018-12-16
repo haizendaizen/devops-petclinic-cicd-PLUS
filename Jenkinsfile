@@ -39,16 +39,16 @@ pipeline {
             steps {
 	              sh 'echo "AWS Provisioning Task: Started"'
 		            sh './jenkins/scripts/EC2_on-demand.sh start'
+                sleep(time:20,unit:"SECONDS")
 
                 sh 'echo "Deployment Task: Started"'
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
 	              sleep(time:20,unit:"SECONDS")
 
-
-                input message: 'Install? (Click "Proceed" to continue)'
                 sh 'echo "NGINX Setup Task: Started"'
                 sh './jenkins/scripts/nginx_setup.sh'
-                sh 'echo "Your app is ready: http://NGINX"'
+                sleep(time:20,unit:"SECONDS")
+                sh 'export IP=$(cat httpd) && echo "Your app is ready: http://$IP:9000"'
 
 		            input message: 'Finished using the web site? (Click "Proceed" to continue)'
 		            sh 'echo "Terminate Task: Started"'
