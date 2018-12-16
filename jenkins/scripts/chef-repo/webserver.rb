@@ -7,17 +7,3 @@
 yum_package 'nginx' do
   action :install
 end
-
-service 'nginx' do
-  supports status: true
-  action :stop
-end
-
-service 'nginx' do
-  supports status: true
-  action :start
-end
-
-template '/etc/nginx/nginx.conf' do
-  source 'nginx.conf.erb'
-end

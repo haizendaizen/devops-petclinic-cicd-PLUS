@@ -4,6 +4,11 @@
 #
 # Copyright:: 2018, The Authors, All Rights Reserved.
 
-file '/home/ec2-user/hello.txt' do
-  content 'Welcome to Chef'
+template '/etc/nginx/nginx.conf' do
+  source 'nginx.conf.erb'
+end
+
+service 'nginx' do
+  supports status: true
+  action :start
 end

@@ -70,7 +70,7 @@ start ()
   echo "Publish Over SSH..."
 	publish
 
-	echo "Starting NGINX..."
+	echo "Installing NGINX..."
   ssh -oStrictHostKeyChecking=no -i $key_location $user@$(cat httpd) "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
 
   echo "Done!"
