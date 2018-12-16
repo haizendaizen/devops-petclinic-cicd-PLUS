@@ -41,10 +41,13 @@ pipeline {
 		            sh './jenkins/scripts/EC2_on-demand.sh start'
 
                 sh 'echo "Deployment Task: Started"'
-                input message: 'Deploy? (Click "Proceed" to continue)'
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
 	              sleep(time:20,unit:"SECONDS")
 
+
+                input message: 'Install? (Click "Proceed" to continue)'
+                sh 'echo "NGINX Setup Task: Started"'
+                sh './jenkins/scripts/nginx_setup.sh'
                 sh 'echo "Your app is ready: http://NGINX"'
 
 		            input message: 'Finished using the web site? (Click "Proceed" to continue)'
