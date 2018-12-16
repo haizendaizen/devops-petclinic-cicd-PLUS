@@ -9,7 +9,7 @@
 # sec_group_8080="sg-0d04e3cac0e005a8d"
 # wait_seconds="60" # seconds between polls for the public IP to populate (keeps it from hammering their API)
 key_location="/home/leonux/aws/MyKeyPair.pem" # SSH settings
-# user="ec2-user" # SSH settings
+user="ec2-user" # SSH settings
 # jar_file="target/*.jar" # SSH settings
 # deploy_scripts="jenkins/scripts/deploy/*.sh" # SSH settings
 
@@ -18,13 +18,13 @@ key_location="/home/leonux/aws/MyKeyPair.pem" # SSH settings
 connect ()
 {
         # ssh -oStrictHostKeyChecking=no -i $key_location $user@$AWS_IP mkdir poc
-        ansible all -i hosts -u ec2-user --private-key=$key_location -b -a "mkdir poc"
+        ansible all -i hosts -u $user --private-key=$key_location -b -a "mkdir poc"
 }
 
 # private
 publish ()
 {
-        ansible all -i hosts -u ec2-user --private-key=$key_location -b -m copy -a "src=hosts dest=~/hosts"
+        ansible all -i hosts -u $user --private-key=$key_location -b -m copy -a "src=hosts dest=~/hosts"
         ansible-playbook jenkins/scripts/ansible/copyfile.yml -i hosts --private-key=$key_location
 
         ansible-playbook jenkins/scripts/ansible/copy_chef_files.yml -i httpd --private-key=$key_location
@@ -34,24 +34,24 @@ publish ()
 configEnv ()
 {
         # Configure EC2 nodes
-        ansible all -i hosts -u ec2-user --private-key=$key_location -b -a "yum -y update"
+        ansible all -i hosts -u $user --private-key=$key_location -b -a "yum -y update"
         ansible-playbook jenkins/scripts/ansible/configEC2.yml -i hosts --private-key=$key_location
 
-        # Configure NGINX webserver ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
-        #Step 1: Install CHEF via SSH
+        # Configure NGINX webserver ansible all -i httpd -u $user --private-key=$key_location -b -a "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+        #Step 1: Install CHEF via SSH.. multicommands doesn't work properly in ansible. Better to create them in a playbook. Use SSH for simplicity.
         echo "Step 1: Install CHEF via SSH"
-        ssh -oStrictHostKeyChecking=no -i $key_location ec2-user@$(cat httpd) "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
+        ssh -oStrictHostKeyChecking=no -i $key_location $user@$(cat httpd) "curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P chefdk -c stable -v 2.5.3"
         sleep 30
 
         #Step 2: Configure CHEF run environment
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo"
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "mkdir chef-repo/cookbooks"
+        ansible all -i httpd -u $user --private-key=$key_location -b -a "mkdir chef-repo"
+        ansible all -i httpd -u $user --private-key=$key_location -b -a "mkdir chef-repo/cookbooks"
 
         #Step 3: Generate NGINX cookbook
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && chef generate cookbook cookbooks/nginx_setup"
+        ansible all -i httpd -u $user --private-key=$key_location -b -a "chef generate cookbook chef-repo/cookbooks/nginx_setup"
 
         #Step 4: Create template
-        ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && chef generate template cookbooks/nginx_setup nginx.conf"
+        ansible all -i httpd -u $user --private-key=$key_location -b -a "chef generate template chef-repo/cookbooks/nginx_setup nginx.conf"
 }
 
 # private
@@ -108,7 +108,7 @@ start ()
 
 	echo "Starting NGINX..."
 
-  ansible all -i httpd -u ec2-user --private-key=$key_location -b -a "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
+  ssh -oStrictHostKeyChecking=no -i $key_location $user@$(cat httpd) "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
 
   echo "Done!"
 
