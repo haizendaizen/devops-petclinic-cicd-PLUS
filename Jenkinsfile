@@ -43,8 +43,9 @@ pipeline {
                 sh 'cd jenkins/scripts/terraform/ && /home/leonux/terraform/bin/terraform output IP-nodeA'
                 sh 'cd jenkins/scripts/terraform/ && /home/leonux/terraform/bin/terraform output IP-nodeB'
 
+                sh 'echo "Deployment Task: Started"'
+                input message: 'Deploy? (Click "Proceed" to continue)'
                 sh 'ansible all -i hosts -u ec2-user --private-key=/home/leonux/aws/MyKeyPair.pem -b -a "./deploy.sh"'
-
 	              sleep(time:20,unit:"SECONDS")
                 sh 'echo "Your app is ready: http://NGINX"'
 
