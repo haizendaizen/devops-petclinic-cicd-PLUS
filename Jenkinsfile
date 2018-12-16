@@ -48,7 +48,7 @@ pipeline {
                 sh 'echo "NGINX Setup Task: Started"'
                 sh './jenkins/scripts/nginx_setup.sh'
                 sleep(time:20,unit:"SECONDS")
-                sh 'export IP=$(cat httpd) && echo "Your app is ready: http://$IP:9000"'
+                sh 'export IP=$(cat httpd) && echo "Your app is ready: http://$IP"'
 
 		            input message: 'Finished using the web site? (Click "Proceed" to continue)'
 		            sh 'echo "Terminate Task: Started"'
