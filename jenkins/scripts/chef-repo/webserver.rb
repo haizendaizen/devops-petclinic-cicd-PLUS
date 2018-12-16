@@ -10,6 +10,11 @@ end
 
 service 'nginx' do
   supports status: true
+  action :stop
+end
+
+service 'nginx' do
+  supports status: true
   action :start
 end
 
