@@ -1,15 +1,15 @@
 #!/bin/bash
 
-getip ()
+getip()
 {
 	cd jenkins/scripts/terraform/
-	IP_nodeA=$(/home/leonux/terraform/bin/terraform output IP-nodeA")
-	IP_nodeB=$(/home/leonux/terraform/bin/terraform output IP-nodeB")
+	IP_nodeA=$(/home/leonux/terraform/bin/terraform output IP-nodeA)
+	IP_nodeB=$(/home/leonux/terraform/bin/terraform output IP-nodeB)
 }
 
-run ()
+run()
 {
-  echo "[Find & Replace]"
+	echo "[Find & Replace]"
 	getip
 	cd ../../../
 	pwd
@@ -17,9 +17,7 @@ run ()
 	ssh -oStrictHostKeyChecking=no -i /home/leonux/aws/MyKeyPair.pem ec2-user@$(cat httpd) "sudo sed -i 's/nodeA/$IP_nodeB/g' chef-repo/cookbooks/nginx_setup/templates/nginx.conf.erb"
 
 	echo "Re-starting NGINX..."
-  	ssh -oStrictHostKeyChecking=no -i /home/leonux/aws/MyKeyPair.pem ec2-user@$(cat httpd) "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
-
-	echo "Done!"
+	ssh -oStrictHostKeyChecking=no -i /home/leonux/aws/MyKeyPair.pem ec2-user@$(cat httpd) "cd chef-repo/ && sudo chef-client --local-mode --runlist 'recipe[nginx_setup::webserver]'"
 }
 
 run
